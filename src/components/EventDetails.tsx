@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
-import { Heart, Sparkles, Wine, type LucideIcon } from "lucide-react";
+import { Flower2, Heart, Sparkles, type LucideIcon } from "lucide-react";
 import {
   dressCode,
   events,
@@ -50,7 +50,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 // ---------------------------------------------------------------------------
 const ICONS: Record<EventIcon, LucideIcon> = {
   ceremony: Heart,
-  cocktail: Wine,
+  cocktail: Flower2,
   reception: Sparkles,
 };
 

@@ -276,10 +276,7 @@ export default function Venue() {
               <ExternalLink size={12} strokeWidth={1.8} />
             </span>
 
-            {/* Coordinates */}
-            <span className="absolute bottom-4 left-4 text-[0.55rem] uppercase tracking-[0.25em] text-obsidian/50">
-              {venue.lat.toFixed(4)}° N · {venue.lng.toFixed(4)}° E
-            </span>
+            
           </motion.a>
 
           {/* -------------------------------------------------------- */}

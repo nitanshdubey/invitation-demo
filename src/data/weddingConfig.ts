@@ -46,6 +46,17 @@ export const couple = {
 } as const;
 
 // ---------------------------------------------------------------------------
+// Hero photo
+// ---------------------------------------------------------------------------
+export const heroImage = {
+  // Direct link to your GitHub image. Same file as your link, just the raw address.
+  src: "https://raw.githubusercontent.com/nitanshdubey/invitation-demo/main/couple1.jpg",
+  alt: "Aarav and Meera together",
+  /** Moves the crop focus so faces stay in frame (x y). Try "center 20%" if heads get cut. */
+  position: "center 25%",
+} as const;
+
+// ---------------------------------------------------------------------------
 // Date (ISO 8601 with timezone offset, used by the countdown + calendar)
 // ---------------------------------------------------------------------------
 export const weddingDate = {
@@ -66,7 +77,7 @@ export const events: WeddingEvent[] = [
   {
     id: "ceremony",
     icon: "ceremony",
-    title: "The Ceremony",
+    title: "Ring Ceremony",
     time: "4:00 PM",
     description:
       "Join us beneath the floral canopy as we exchange vows in the presence of our loved ones.",
@@ -74,10 +85,10 @@ export const events: WeddingEvent[] = [
   {
     id: "cocktail",
     icon: "cocktail",
-    title: "Cocktail Hour",
+    title: "Haldi & Menhdi",
     time: "6:00 PM",
     description:
-      "Sip on signature cocktails, enjoy live acoustic music and canapés in the garden terrace.",
+      "Get Your hands green, enjoy live acoustic music and Haldi in the garden terrace.",
   },
   {
     id: "reception",
@@ -137,23 +148,22 @@ export const gallery: GalleryImage[] = [
 // ---------------------------------------------------------------------------
 // Venue
 // ---------------------------------------------------------------------------
-const venueName = "The Grand Palladium Gardens";
-const venueAddress = "12 Heritage Lane, Civil Lines, Bhopal, Madhya Pradesh 462001";
-const venueLat = 23.2599;
-const venueLng = 77.4126;
+const venueName = "Moonlight Photography, Sagar";
+const venueAddress =
+  "Gopalganj, Kali Tiraha, beside Bandhan Bank, Gopal Ganj, Sagar, Madhya Pradesh 470001";
+const venueSearch = encodeURIComponent(`${venueName}, ${venueAddress}`);
 
 export const venue = {
   name: venueName,
   address: venueAddress,
-  lat: venueLat,
-  lng: venueLng,
   notes: "Valet parking is available at the main entrance. Doors open at 3:30 PM.",
   links: {
-    google: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-      `${venueName}, ${venueAddress}`
-    )}`,
-    apple: `https://maps.apple.com/?ll=${venueLat},${venueLng}&q=${encodeURIComponent(venueName)}`,
-    waze: `https://waze.com/ul?ll=${venueLat},${venueLng}&navigate=yes`,
+    // Your exact Google Maps link
+    google:
+    "https://www.google.com/maps/place/Moonlight+Photography+Sagar,+Gopalganj,+Kali+Tiraha,+beside+Bandhan+Bank,+Gopal+Ganj,+Sagar,+Madhya+Pradesh+470001/data=!4m2!3m1!1s0x3978d1ccb05f23d9:0x3231113911842606",
+    // Apple Maps and Waze open by name + address
+    apple: `https://maps.apple.com/?q=${venueSearch}`,
+    waze: `https://waze.com/ul?q=${venueSearch}&navigate=yes`,
   },
 } as const;
 

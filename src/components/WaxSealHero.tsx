@@ -3,11 +3,13 @@ import {
   AnimatePresence,
   motion,
   useReducedMotion,
+  useScroll,
+  useTransform,
   type Variants,
 } from "framer-motion";
 import confetti from "canvas-confetti";
 import { ChevronDown } from "lucide-react";
-import { couple, venue, weddingDate } from "../data/weddingConfig";
+import { couple, heroImage, venue, weddingDate } from "../data/weddingConfig";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -204,6 +206,12 @@ export default function WaxSealHero({ onOpen }: WaxSealHeroProps) {
   const [phase, setPhase] = useState<Phase>("closed");
   const [flapBehind, setFlapBehind] = useState(false);
   const reduce = useReducedMotion();
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
   const timers = useRef<number[]>([]);
 
   const first = couple.partnerOne.charAt(0);
@@ -433,6 +441,7 @@ export default function WaxSealHero({ onOpen }: WaxSealHeroProps) {
       {/* HERO (monogram header, revealed after the seal is broken)           */}
       {/* ------------------------------------------------------------------ */}
       <section
+      ref={heroRef}
         id="top"
         className="grain relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-ivory px-6 py-24 text-center"
       >
@@ -470,36 +479,69 @@ export default function WaxSealHero({ onOpen }: WaxSealHeroProps) {
           </motion.p>
 
           {/* Monogram with a self-drawing gold ring */}
-          <motion.div
-            variants={heroItem}
-            className="relative my-8 flex h-44 w-44 items-center justify-center sm:h-52 sm:w-52"
-          >
-            <svg viewBox="0 0 200 200" className="absolute inset-0 h-full w-full" aria-hidden="true">
-              <g transform="rotate(-90 100 100)">
-                <motion.circle
-                  cx="100"
-                  cy="100"
-                  r="94"
-                  fill="none"
-                  stroke="#D4AF37"
-                  strokeWidth="1.2"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: opened ? 1 : 0 }}
-                  transition={{ duration: 2.2, delay: 0.6, ease: "easeInOut" }}
+                    {/* Couple photo: arched frame */}
+                    <motion.div variants={heroItem} className="relative mb-12 mt-8">
+            {/* Soft gold glow behind the frame */}
+            <div className="pointer-events-none absolute -inset-8 rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.35),transparent_65%)] blur-2xl" />
+
+            {/* Outer thin outline, offset from the frame */}
+            <motion.div
+              className="pointer-events-none absolute -inset-3 rounded-t-full rounded-b-[1.6rem] border border-gold/50"
+              initial={{ opacity: 0, scale: 0.94 }}
+              animate={{ opacity: opened ? 1 : 0, scale: opened ? 1 : 0.94 }}
+              transition={{ duration: 1.4, delay: 1.2, ease: "easeOut" }}
+            />
+
+            {/* Gold frame + photo, revealed from the bottom up */}
+            <motion.div
+              className="relative h-[23rem] w-[16.5rem] rounded-t-full rounded-b-[1.3rem] bg-gold-gradient p-[5px] shadow-gold sm:h-[28rem] sm:w-[20rem]"
+              initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
+              animate={{
+                clipPath: opened ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)",
+              }}
+              transition={{ duration: 1.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="relative h-full w-full overflow-hidden rounded-t-full rounded-b-[1.1rem] bg-taupe">
+                <motion.img
+                  src={heroImage.src}
+                  alt={heroImage.alt}
+                  draggable={false}
+                  className="absolute inset-x-0 -top-[8%] h-[116%] w-full select-none object-cover"
+                  style={{
+                    objectPosition: heroImage.position,
+                    y: reduce ? 0 : imgY,
+                  }}
+                  initial={{ scale: reduce ? 1 : 1.3 }}
+                  animate={{ scale: opened && !reduce ? 1.04 : reduce ? 1 : 1.3 }}
+                  transition={{ duration: 3.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 />
-              </g>
-              <circle
-                cx="100"
-                cy="100"
-                r="86"
-                fill="none"
-                stroke="rgba(212,175,55,0.4)"
-                strokeWidth="0.6"
-              />
-            </svg>
-            <span className="text-gold-shimmer font-display text-5xl italic sm:text-6xl">
-              {couple.initials}
-            </span>
+
+                {/* Gentle darkening at the bottom for depth */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-obsidian/35 via-transparent to-transparent" />
+
+                {/* One-time light sweep across the photo */}
+                {!reduce && opened && (
+                  <motion.span
+                    className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                    initial={{ x: "-120%" }}
+                    animate={{ x: "450%" }}
+                    transition={{ duration: 1.6, delay: 2.4, ease: "easeInOut" }}
+                  />
+                )}
+              </div>
+            </motion.div>
+
+            {/* Monogram badge overlapping the bottom edge */}
+            <motion.div
+              className="absolute -bottom-7 left-1/2 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-full border border-gold bg-ivory shadow-gold sm:h-[4.5rem] sm:w-[4.5rem]"
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: opened ? 1 : 0, scale: opened ? 1 : 0.6 }}
+              transition={{ type: "spring", stiffness: 180, damping: 14, delay: 1.9 }}
+            >
+              <span className="text-gold-shimmer font-display text-xl italic sm:text-2xl">
+                {couple.initials}
+              </span>
+            </motion.div>
           </motion.div>
 
           <motion.h1
